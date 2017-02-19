@@ -37,7 +37,7 @@
      (when-not (empty? events)
        (<? S (cs/transact! stage [user cdvcs-id] event-txs))
        ;; print a bit of stats from time to time
-       (when (< (rand) 1)
+       (when (< (rand) 0.05)
          (println "Date: " (java.util.Date.))
          (println "Pending: " (count (second @pending)))
          (println "Commit count:" (count (get-in @stage [user cdvcs-id :state :commit-graph])))
