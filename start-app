@@ -1,5 +1,5 @@
 #!/bin/bash
 cd /polo-collector; 
 
-lein run /data/polo-store trump > /var/log/collector.log
+lein run /data/polo-store ticker trollbox BTC_XMR BTC_ETH > /var/log/collector.log
 #java -Xmx256m -jar target/topiq-standalone.jar /opt/server-config.edn > /var/log/topiq.log
