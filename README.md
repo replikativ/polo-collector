@@ -2,7 +2,7 @@
 
 This is a simple collector of tick events of
 the [Poloniex](http://poloniex.com/) exchange. It
-uses [replikativ](https://replikativ.io) to store and replicate the raw data for
+uses [replikativ](http://replikativ.io) to store and replicate the raw data for
 later analysis. Also have a look at
 the [twitter-collector](https://github.com/replikativ/twitter-collector), which
 can store social media data (e.g. about Bitcoin).
