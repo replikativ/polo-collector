@@ -74,7 +74,7 @@
     (<?? S (peer/connect S polo-client "wss://api.poloniex.com/"))
     ;; we def things here, so we can independently stop and start the stream from the REPL
     ;; HACK block main thread
-    #_(<?? S c)))
+    (<?? S c)))
 
 
 (comment
