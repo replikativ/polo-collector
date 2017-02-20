@@ -14,7 +14,8 @@
             [replikativ.crdt.cdvcs.stage :as cs]
             [replikativ.stage :as s]
             [taoensso.timbre :as timbre]
-            [superv.async :refer [go-try <? <?? go-loop-try S]]
+            [superv.async :refer [go-try <? <?? go-loop-try S
+                                  restarting-supervisor]]
             [konserve.core :as k]))
 
 (timbre/set-level! :info)
@@ -71,7 +72,10 @@
                                                 "realm1"
                                                 #(new-event pending %))
                                        json))
-    (<?? S (peer/connect S polo-client "wss://api.poloniex.com/"))
+    (restarting-supervisor
+     (fn [S]
+       (go-try S
+         (<? S (peer/connect S polo-client "wss://api.poloniex.com/")))))
     ;; we def things here, so we can independently stop and start the stream from the REPL
     ;; HACK block main thread
     (<?? S c)))
