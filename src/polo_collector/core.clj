@@ -27,7 +27,8 @@
 
 
 (defn new-event [pending event]
-  (swap! pending (fn [[prev cur] event] [prev (conj cur event)]) event))
+  (swap! pending (fn [[prev cur] event] [prev (conj cur event)])
+         (conj event (java.util.Date.))))
 
 (defn store-events [stage pending]
   (go-try S
