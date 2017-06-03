@@ -13,6 +13,7 @@
              [stage :refer [connect! create-stage!]]]
             [replikativ.crdt.cdvcs.stage :as cs]
             [replikativ.stage :as s]
+            [replikativ-fressianize.core :refer [fressianize]]
             [taoensso.timbre :as timbre]
             [superv.async :refer [go-try <? <?? go-loop-try S
                                   restarting-supervisor]]
@@ -20,9 +21,11 @@
 
 (timbre/set-level! :info)
 
-(def user "mail:polo@crawler.com") ;; will be used to authenticate you (not yet)
+(<?? S (timeout 500))
 
-(def cdvcs-id #uuid "312c5d5f-a849-4b08-b80e-64f47d3532a7")
+(def user "mail:polo@topiq.es") ;; will be used to authenticate you (not yet)
+
+(def cdvcs-id #uuid "19266ad7-27b3-41fe-918a-51b2af4e6b1b")
 
 
 
@@ -37,7 +40,8 @@
          event-txs #_(mapv (fn [t] ['add-event t]) events)
          [['add-events events]]]
      (when-not (empty? events)
-       (<? S (cs/transact! stage [user cdvcs-id] event-txs))
+       (<? S (cs/transact! stage [user cdvcs-id]
+                           (<? S (fressianize event-txs))))
        ;; print a bit of stats from time to time
        (when (< (rand) 0.05)
          (println "Date: " (java.util.Date.))
@@ -63,6 +67,7 @@
         _ (def stage (<?? S (create-stage! user peer)))
         _ (<?? S (cs/create-cdvcs! stage :id cdvcs-id))
         c (chan)]
+    (connect! stage "ws://replikativ.io:8888")
     (go-loop-try S []
                  (<? S (store-events stage pending))
                  (<? S (timeout (* 10 1000)))

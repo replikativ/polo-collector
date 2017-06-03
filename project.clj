@@ -6,9 +6,11 @@
   :dependencies [[org.clojure/clojure "1.8.0"]
 
                  [cheshire "5.7.0"]
-                 [io.replikativ/kabel "0.2.1-SNAPSHOT"]
                  [io.replikativ/konserve-leveldb "0.1.1"]
-                 [io.replikativ/replikativ "0.2.2-SNAPSHOT"]
+                 [io.replikativ/replikativ "0.2.4-SNAPSHOT"]
+                 [io.replikativ/replikativ-fressianize "0.1.0-SNAPSHOT"]
                  [employeerepublic/slf4j-timbre "0.4.2"]]
+
+  :profiles {:dev {:dependencies [[plotly-clj "0.1.1"]]}}
 
   :main polo-collector.core)

@@ -1,4 +1,5 @@
 (ns polo-collector.client
+  (:use [plotly-clj.core])
   (:require [polo-collector.core :refer [user cdvcs-id]]
             [replikativ.crdt.cdvcs.realize :as r]
             [replikativ.peer :refer [client-peer]]
@@ -44,23 +45,55 @@
   (<?? S (connect! client-stage "ws://aphrodite.polyc0l0r.net:9096"))
   )
 
-(keys (get-in @client-stage [user cdvcs-id :state]))
+(count (get-in @client-stage [user cdvcs-id :state :commit-graph]))
 
 
 
+;; stream data
 
 (def events (atom []))
 
-(def atom-stream (r/stream-into-identity! client-stage [user cdvcs-id]
-                                          {'add-events (fn [old evs]
-                                                         (when (< (rand)
-                                                                  (/ 10000
-                                                                     (* 7 7 24 360)))
-                                                           (swap! old into evs))
-                                                         old)}
-                                          events))
+(def atom-stream
+  (r/stream-into-identity! client-stage [user cdvcs-id]
+                           {'add-events (fn [S old evs]
+                                          (go-try S
+                                                  (->> (<? S (unfressianize S client-store evs))
+                                                       (filter (fn [[_ t _ _ [p]]]
+                                                                 (and (= t "ticker")
+                                                                      (= "BTC_ETH" p))))
+                                                       (map (fn [[_ t _ _ [_ last]]] (Double/parseDouble last)))
+                                                       doall
+                                                       (swap! old conj)))
+                                          old)}
+                           events))
+
+(count (apply concat @events))
+
+(take 10 @events)
+
+(defn btc-eth []
+  (->> @events
+       (apply concat)
+       (mapv (fn [[_ t _ _ e]] e))))
 
 
-(first @events)
+(count (btc-eth))
+
+
+(-> (plotly (apply concat @events))
+    add-scatter
+    (save-html "plotly.html" :open))
+
+(require '[clojure.core.matrix :as mat])
+
+(let [hist (apply concat @events)]
+  (/ (reduce + hist)
+     (count hist)))
+
+;; TODO
+;; Reconstruct Polo BTC_ETH graph
+;; plotly https://plot.ly/javascript/candlestick-charts/
+;; https://github.com/andredumas/techan.js
+
 
 (async/close! (:close-ch atom-stream))
