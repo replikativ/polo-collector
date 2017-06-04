@@ -23,9 +23,9 @@
 
 (<?? S (timeout 500))
 
-(def user "mail:polo@topiq.es") ;; will be used to authenticate you (not yet)
+(def user "mail:polo@crawler.com") ;; will be used to authenticate you (not yet)
 
-(def cdvcs-id #uuid "19266ad7-27b3-41fe-918a-51b2af4e6b1b")
+(def cdvcs-id #uuid "312c5d5f-a849-4b08-b80e-64fa7de538a7")
 
 
 
@@ -67,6 +67,7 @@
         _ (def stage (<?? S (create-stage! user peer)))
         _ (<?? S (cs/create-cdvcs! stage :id cdvcs-id))
         c (chan)]
+    ;; test net connection
     (connect! stage "ws://replikativ.io:8888")
     (go-loop-try S []
                  (<? S (store-events stage pending))

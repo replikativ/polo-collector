@@ -29,7 +29,7 @@
 
 
 ;; replikativ
-(def client-store (<?? S (new-leveldb-store "/media/christian/05E6-1B0F/polo-collector-store")))
+(def client-store (<?? S (new-leveldb-store "/tmp/polo-client-store")))
 
 
 (def client (<?? S (client-peer S client-store :middleware fetch)))
@@ -43,6 +43,7 @@
 (comment
 
   (<?? S (connect! client-stage "ws://aphrodite.polyc0l0r.net:9096"))
+  (<?? S (connect! client-stage "ws://replikativ.io:8888"))
   )
 
 (count (get-in @client-stage [user cdvcs-id :state :commit-graph]))
