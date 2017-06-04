@@ -40,8 +40,7 @@
          event-txs #_(mapv (fn [t] ['add-event t]) events)
          [['add-events events]]]
      (when-not (empty? events)
-       (<? S (cs/transact! stage [user cdvcs-id]
-                           (<? S (fressianize event-txs))))
+       (<? S (cs/transact! stage [user cdvcs-id] (fressianize event-txs)))
        ;; print a bit of stats from time to time
        (when (< (rand) 0.05)
          (println "Date: " (java.util.Date.))

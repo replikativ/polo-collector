@@ -41,6 +41,17 @@
 
 
 (comment
+  (let [ commit-val {:transactions [] ;; common base commit (not allowed elsewhere)
+                     :parents []
+                     :crdt :cdvcs
+                     :version 1
+                     :ts (replikativ.environ/*date-fn*)
+                     :author "mail:polo@crawler.com"}]
+    (replikativ.environ/*id-fn* (select-keys commit-val #{:transactions :parents})))
+
+  (replikativ.environ/*id-fn* {:transactions [] :parents []})
+
+  (hasch.core/uuid {:transactions [] :parents []})
 
   (<?? S (connect! client-stage "ws://aphrodite.polyc0l0r.net:9096"))
   (<?? S (connect! client-stage "ws://replikativ.io:8888"))
